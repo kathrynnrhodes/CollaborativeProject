@@ -8,6 +8,7 @@ editor: visual
 
 #Function 1; Image analyzis
 
+
 ```{r}
 analyze_image <- function(image, threshold = "60%") {
   split_image <- image_separate(image)
