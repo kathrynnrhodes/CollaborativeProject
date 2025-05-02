@@ -6,8 +6,7 @@ editor: visual
 
 # Functions for package: AnalyzeR
 
-#Function 1; Image analyzis
-
+#Function 1; Image analysis
 
 ```{r}
 analyze_image <- function(image, threshold = "60%") {
@@ -36,6 +35,7 @@ analyze_image <- function(image, threshold = "60%") {
 ```
 
 ## Example of Function 1 analyze_image working
+
 ```{r}
 
 #Example of Function 1 working
@@ -45,7 +45,12 @@ analyze_image <- function(image, threshold = "60%") {
 library(tiff)
 library(magick)
 
+#Example of Function 1 working
 
+#Load necessary libraries
+#These will be the dependents for the packge 
+library(tiff)
+library(magick)
 
 # Load the image 
 image_1 <- image_read("F_FXR_3_cerebellum_40x_1.tif")  
@@ -61,8 +66,8 @@ plot(result$processed_image)
 
 ```
 
-#Function 2; group_loaded_images
-allows you to have all of your individula assigned images converted to a single list to streamline batch analysis 
+#Function 2; group_loaded_images allows you to have all of your individual assigned images converted to a single list to streamline batch analysis
+
 ```{r}
 #make the group images function
 group_loaded_images <- function(image_objects, processor_function, ...) {
@@ -94,7 +99,8 @@ process_loaded_images <- function(image_list, output_format = "tif", resize = NU
 }
 ```
 
-##Example of function 2 working group_loaded_images
+## Example of function 2 working group_loaded_images
+
 ```{r}
 #load necessary packages, this will be our dependents when we create our package
 library(tiff)
@@ -107,8 +113,9 @@ result <- group_loaded_images(my_images, process_loaded_images, output_format = 
 summary(result)
 ```
 
-#Function 3; batch_analyze_images
-Allows you to analyze multiple images after you have optimized your thresholds, so that you can quantify mulpiple images at once for your data set AFTER YOU HAVE CREATED YOUR GROUPED IMAGES
+# Function 3; batch_analyze_images
+
+Allows you to analyze multiple images after you have optimized your thresholds, so that you can quantify multiple images at once for your data set AFTER YOU HAVE CREATED YOUR GROUPED IMAGES
 
 ```{r}
 batch_analyze_images <- function(image_result, threshold = "60%") {
@@ -149,6 +156,8 @@ batch_analyze_images <- function(image_result, threshold = "60%") {
                       length(images), paste0(round(avg_percent, 2), "%"))
   ))
 }
+
+str(result)
 ```
 
 ## Example of function 3; batch_analyze_image
@@ -156,4 +165,38 @@ batch_analyze_images <- function(image_result, threshold = "60%") {
 ```{r}
 analysis_results <- batch_analyze_images(result, threshold = "60%")
 print(analysis_results$summary)
+```
+
+# Creating Package called AnalyzeR
+
+```{r}
+#loading necessary packages
+library(devtools)
+library(roxygen2)
+library(withr)
+library(tidyverse)
+library(usethis)
+
+has_devel()
+#s will spit back at  you " rsystem is ready to build packages!"
+
+usethis::create_package("~/Development/Repos/AnalyzeR")
+```
+
+This r code chunk created a new repository locally on my computer (megan) We have sent in a separate repository of our package as well!
+
+In order to use package {AnalyzeR}
+
+1.) go the github repository Clone down to local computer grab url (https://github.com/meganhall719/AnalyzeR.git) c
+
+2.) To install packages
+
+```{r}
+#this code allows you to install package {AnalyzeR}
+devtools::install_github("meganhall719/AnalyzeR", build_vignettes = TRUE)
+
+# the prompt may ask you to 'force = installation' do this to include vignette.
+
+#if this does not include vignette please do
+vignette("Image Analyzes vignette", package = "AnalyzeR")
 ```
