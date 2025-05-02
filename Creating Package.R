@@ -9,7 +9,5 @@ has_devel()
 #spit back you rsystem is ready to build packages!
 usethis::create_package("~/Development/Repos/AnalyzeR")
 
-install.packages("~/Users/meganhall/Development/Repos/AnalyzeR_0.0.0.9000.tar.gz", repos = NULL, type = "source",
-                 lib = "/Library/Frameworks/R.framework/Versions/3.5/Resources/library")
 install.packages("/Users/meganhall/Development/Repos/AnalyzeR_0.0.0.9000.tar.gz", repos = NULL, type = "source")
 library(AnalyzeR)
