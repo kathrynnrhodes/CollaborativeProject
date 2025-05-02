@@ -1,0 +1,156 @@
+---
+title: "APAP Data analysis"
+format: html
+editor: visual
+---
+
+H&E image analysis
+
+APAP (acetominophen) causes liver failure, but these mice were treated with an anti-TGFb compound to elucidate the role TGFb signaling plays in how APAP causes liver necrosis and failure. If TGFb signaling is involved in driving the liver damage from APAP, then inhibiting it with anti-TGFb should lessen the damage observed in the H&E stain.
+
+Control group was vehicle + saline, where they have no liver damage and the saline should have no effect. Other controls for the anti-TGFb compound is the APAP + saline group and the vehicle + anti-TGFb group to show a) saline cannot reverse liver damage and b) the compound has no effect on a healthy liver.
+
+Step 1. Load and assign images
+
+```{r}
+library(magick)
+apap_saline_1 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20Saline%20Liver%201.jpg")
+apap_saline_2 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20Saline%20Liver%202.jpg")
+apap_saline_3 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20Saline%20Liver%203.jpg")
+apap_saline_4 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20Saline%20Liver%204.jpg")
+apap_saline_5 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20Saline%20Liver%205.jpg")
+print(apap_saline_1) #ensure correct image has loaded. this will pop up in the viewer tab.
+
+#vehicle group (no liver failure) with saline treatment
+vehicle_saline_1 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20Saline%20Liver%201.jpg")
+vehicle_saline_2 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20Saline%20Liver%202.jpg")
+vehicle_saline_3 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20Saline%20Liver%203.jpg")
+vehicle_saline_4 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20Saline%20Liver%204.jpg")
+vehicle_saline_5 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20Saline%20Liver%205.jpg")
+
+#APAP group (liver failure) with anti-TGFb treatment
+apap_antiTGFB_1 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20antiTGFb%20Liver%201.jpg")
+apap_antiTGFB_2 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20antiTGFb%20Liver%202.jpg")
+apap_antiTGFB_3 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20antiTGFb%20Liver%203.jpg")
+apap_antiTGFB_4 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20antiTGFb%20Liver%204.jpg")
+apap_antiTGFB_5 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/APAP%20%2B%20antiTGFb%20Liver%205.jpg")
+
+#Vehicle group (no liver failure) with anti-TGFb treatment
+vehicle_antiTGFB_1 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20antiTGFb%20Liver%201.jpg")
+vehicle_antiTGFB_2 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20antiTGFb%20Liver%202.jpg")
+vehicle_antiTGFB_3 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20antiTGFb%20Liver%203.jpg")
+vehicle_antiTGFB_4 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20antiTGFb%20Liver%204.jpg")
+vehicle_antiTGFB_5 <- image_read("https://raw.githubusercontent.com/kathrynnrhodes/CollaborativeProject/refs/heads/main/Images%20for%20Analysis/Vehicle%20%2B%20antiTGFb%20Liver%205.jpg")
+
+#all these photo paths are pulled directly from those loaded into the repository under "Images for Analysis", so you won't need to clone the photos down to your local computer
+#now that the APAP with saline has been loaded, we can load the other 3 groups.
+```
+
+Step 2. Load in {AnalyzeR} package with all the necessary functions
+
+```{r}
+#Can only do this upon performing the steps to download in the "Functions_For_Package.qmd" Quarto document when you have downloaded the {AnalyzeR} package locally
+library(AnalyzeR)
+```
+
+Step 3. Group Images
+
+```{r}
+apap_saline <- list(apap_saline_1, apap_saline_2, apap_saline_3, apap_saline_4, apap_saline_5)
+apap_saline <- group_loaded_images(apap_saline, process_loaded_images)
+summary(apap_saline) #check all 5 images from this group have been grouped by the group loaded images function
+
+vehicle_saline <- list(vehicle_saline_1, vehicle_saline_2, vehicle_saline_3, vehicle_saline_4, vehicle_saline_5)
+vehicle_saline <- group_loaded_images(vehicle_saline, process_loaded_images)
+summary(vehicle_saline) #check all 5 images from this group have been grouped by the group loaded images function
+
+apap_antiTGFB <- list(apap_antiTGFB_1, apap_antiTGFB_2, apap_antiTGFB_3, apap_antiTGFB_4, apap_antiTGFB_5)
+apap_antiTGFB <- group_loaded_images(apap_antiTGFB, process_loaded_images)
+summary(apap_antiTGFB) #check all 5 images from this group have been grouped by the group loaded images function
+
+vehicle_antiTGFB <- list(vehicle_antiTGFB_1, vehicle_antiTGFB_2, vehicle_antiTGFB_3, vehicle_antiTGFB_4, vehicle_antiTGFB_5)
+vehicle_antiTGFB <- group_loaded_images(vehicle_antiTGFB, process_loaded_images)
+summary(vehicle_antiTGFB) #check all 5 images from this group have been grouped by the group loaded images function
+#now that all images have been loaded into their separate groups, we can analyze each batch to get an average for each treatment group.
+```
+
+Step 3. Batch Analyze and tibble
+
+```{r, cache=TRUE}
+#Utilize the batch_image_analysis() function with the same threshold for all images since the background staining (how dark the image is as a whole) is comparable between all groups.
+
+apap_saline_results <- batch_analyze_images(apap_saline, threshold = "60%")
+print(apap_saline_results)
+
+vehicle_saline_results <- batch_analyze_images(vehicle_saline, threshold = "60%")
+print(vehicle_saline_results)
+
+apap_antiTGFB_results <- batch_analyze_images(apap_antiTGFB, threshold = "60%")
+print(apap_antiTGFB_results)
+
+vehicle_antiTGFB_results <- batch_analyze_images(vehicle_antiTGFB, threshold = "60%")
+print(vehicle_antiTGFB_results)
+```
+
+Step 4. Make a tibble with your results for easy statistical analysis
+
+```{r}
+#Make the data frame using the results from the batch image analysis in Step 3.
+library(tidyverse)
+data_frame <- data.frame(
+  Mouse = c(1, 2, 3, 4, 5),
+  APAP_saline = c(91.69, 89.53, 89.46, 85.73, 84.7),
+  Vehicle_saline = c(95.18, 94.39, 90.83, 88.82, 89.98),
+  APAP_antiTGFb = c(95.01, 95.24, 95.5, 91.74, 97.9),
+  Vehicle_antiTGFb = c(96.03, 94.55, 94.7, 91.61, 91.57)
+)
+
+#Convert the data frame to a tibble
+results_tibble <- as_tibble(data_frame)
+print(results_tibble) #ensure the treatment groups contain correct value for each mouse
+```
+
+Step 5. Begin statistical analysis between the groups to determine if there is a significant difference between the groups.
+
+```{r}
+#None of these groups require a paired T-test due to these groups not measuring the same group at separate time points. These are all independent groups and can use unpaired T tests to dtermine significance.
+
+controls_t_test <- t.test(results_tibble$APAP_saline, results_tibble$Vehicle_saline)
+print(controls_t_test)
+#p value = 0.07999 which is not < 0.05. No significant difference between the saline control treatment as expected.
+
+TGFb_t_test <- t.test(results_tibble$APAP_antiTGFb, results_tibble$Vehicle_antiTGFb)
+print(TGFb_t_test)
+#p value = 0.328 which is not < 0.05. No significant difference between the anti-TGFb groups.
+
+APAP_t_test <- t.test(results_tibble$APAP_saline, results_tibble$APAP_antiTGFb)
+print(APAP_t_test)
+# p value = 0.003504 which is < 0.05, and therefore a significant difference exists between the APAP + saline group and the APAP + anti-TGFb group. This shows that through administering anti-TGFb, the APAP damage to the liver can be alleviated and provides evidence that TGFb signaling has a role in the mechanism of damage of APAP.
+
+vehicle_t_test <- t.test(results_tibble$Vehicle_saline, results_tibble$Vehicle_antiTGFb)
+print(vehicle_t_test)
+#p value = 0.2664 which is not < 0.05, and therefore shows no significant difference between the Vehicle + saline group and the Vehicle + anti-TGFb group as expected. Because the vehicle group has no liver damage due to not recieving APAP treatment prior to administering the anti-TGFb, there would be no damage for this to hypothetically alleviate. 
+```
+
+Step 6. Visualize data as a box plot.
+
+```{r}
+library(ggplot2)
+#reformat the data frame so each treatment group has it's own column
+results_data <- data_frame %>%
+  pivot_longer(cols = -Mouse,  #Exclude the "Mouse" column since it's not the staining data
+               names_to = "Treatment", 
+               values_to = "Value")
+
+# Create the boxplot
+ggplot(results_data, aes(x = Treatment, y = Value, fill = Treatment)) +
+  geom_boxplot() +
+  geom_point(position = position_jitter(width = 0.2), size = 3, alpha = 0.7) +
+  labs(title = "Distribution of Values by Treatment",
+       x = "Treatment Group",
+       y = "% Difference") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Now we have a colorful plot to visualize our results! Thanks to our package {AnalyzeR}, all the functions were ready for us to utilize so we could quickly analyze our H&E staining.
