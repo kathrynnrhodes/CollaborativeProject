@@ -1,5 +1,5 @@
 #script for batch analysis of images
-# Enhanced function to analyze a single image using magick
+#Re-written analyze image function so we can make the batch analyze function where it will include the splitting channels feature
 analyze_image <- function(image, threshold = "60%") {
   split_image <- image_separate(image)
   split_image <- image_threshold(split_image, type = "white", threshold = threshold)
@@ -24,12 +24,12 @@ analyze_image <- function(image, threshold = "60%") {
   ))
 }
 
-# Function to batch analyze multiple images
-batch_analyze_images <- function(image_result, threshold = "60%") {
+#Now we can make the function to batch analyze multiple images with the combined analysis, channel splitting, and comparison to a blank image written in the chunk above
+batch_analyze_images <- function(image_result, threshold = "60%") { #what the function will look like when you go to use it and what you'll need to input.
   if (!is.list(image_result) || is.null(image_result$images)) {
     stop("Expected input from group_loaded_images function with 'images' field")
   }
-  images <- image_result$images
+  images <- image_result$images #The analysis output that will print out in the console
   results <- lapply(1:length(images), function(i) {
     if (!inherits(images[[i]], "magick-image")) {
       temp_file <- tempfile(fileext = ".tif")
@@ -54,7 +54,7 @@ batch_analyze_images <- function(image_result, threshold = "60%") {
     cat(sprintf("  Distortion value: %.2f\n", r$comparison_result$distortion))
     cat(sprintf("  Percent difference from blank: %s\n\n", r$formatted))
   }
-  return(list(
+    return(list(
     individual_results = results,
     average_percentage = avg_percent,
     formatted_average = paste0(round(avg_percent, 2), "%"),
@@ -63,7 +63,7 @@ batch_analyze_images <- function(image_result, threshold = "60%") {
                       length(images), paste0(round(avg_percent, 2), "%"))
   ))
 }
-#make the group images function
+#Our group images function again here so we can test it with the batch_analyze_images() function. This script was written prior to the package being made, so we needed to retype it for a proper test.
 group_loaded_images <- function(image_objects, processor_function, ...) {
   # Validate inputs
   if (length(image_objects) == 0) {
@@ -74,13 +74,13 @@ group_loaded_images <- function(image_objects, processor_function, ...) {
     stop("processor_function must be a function")
   }
   
-  # Call the processor function with the grouped images and any additional arguments
+  #Call the processor function with the grouped images and any additional arguments
   result <- processor_function(image_objects, ...)
   
   return(result)
 }
 
-# Example usage with pre-loaded images:
+#As described in our group_loaded_images() script, we wrote this to show if you have successfully processed these images into a list
 process_loaded_images <- function(image_list, output_format = "tif", resize = NULL) {
   cat(sprintf("Processing %d pre-loaded images with output format: %s\n", 
               length(image_list), output_format))
@@ -92,7 +92,7 @@ process_loaded_images <- function(image_list, output_format = "tif", resize = NU
   ))
 }
 
-# Example usage
+#Example usage for grouping the images, then performing batch image analysis
 library(tiff)
 library(magick)
 image_1 <- readTIFF("/cloud/project/F_FXR_3_cerebellum_40x_1.tif") 
@@ -104,5 +104,5 @@ summary(result)
 analysis_results <- batch_analyze_images(result, threshold = "60%")
 print(analysis_results$summary)
 
-#IMPORTANT! DO NOT LABEL IMAGES AS "image1" ETC! This will result in a "file not found" error. Instead, stick to the nomenclature used in the example provided. 
+#IMPORTANT! DO NOT LABEL IMAGES AS "image1"/"image"/"img" ETC! This will result in a "file not found" error because these terms are used to write the function and won't recognize you've named your file similarly. Instead, stick to the nomenclature used in the example provided. 
 #Happy analysis!
