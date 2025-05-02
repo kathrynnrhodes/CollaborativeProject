@@ -1,6 +1,6 @@
 library(magick)
 library(tiff)
-group_loaded_images <- function(image_objects, processor_function, ...) {
+group_loaded_images <- function(image_objects, processor_function) {
   # Validate inputs
   if (length(image_objects) == 0) {
     stop("No image objects provided")
@@ -10,13 +10,13 @@ group_loaded_images <- function(image_objects, processor_function, ...) {
     stop("processor_function must be a function")
   }
   
-  # Call the processor function with the grouped images and any additional arguments
-  result <- processor_function(image_objects, ...)
+  #Call the processor function with the grouped images
+  result <- processor_function(image_objects)
   
   return(result)
 }
 
-# Example usage with pre-loaded images:
+#Function to use in tandem within the group_loaded_images() function so you know the grouping worked with the right number of images you put into a list
 process_loaded_images <- function(image_list, output_format = "tif", resize = NULL) {
   cat(sprintf("Processing %d pre-loaded images with output format: %s\n", 
               length(image_list), output_format))
@@ -28,7 +28,7 @@ process_loaded_images <- function(image_list, output_format = "tif", resize = NU
   ))
 }
 
-# Example call
+#Example call
 image_1 <- readTIFF("/cloud/project/F_FXR_3_cerebellum_40x_1.tif") #assign your images
 image_2 <- readTIFF("/cloud/project/F_FXR_3_cerebellum_40x_2.tif")
 image_3 <- readTIFF("/cloud/project/F_FXR_3_cerebellum_40x_3.tif")
